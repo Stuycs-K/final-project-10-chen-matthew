@@ -1,22 +1,8 @@
 # Work Log
 
-## GROUP MEMBER 1
+## Matthew Chen
 
-### date x
+### date 5/22
 
-info
-
-### date y
-
-info
-
-
-## GROUP MEMBER 2
-
-### date x
-
-info
-
-### date y
-
-info
+-added a c++ debug file to convenience  
+-created miller rabin primality, wrote up some sieve to potentially test
