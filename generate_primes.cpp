@@ -3,7 +3,7 @@
 using namespace std;
 using ll = long long;
 
-const int K = 200;
+const int K = 40;
 const int NUMPRIMES = 18;
 const int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61};
 
@@ -31,8 +31,8 @@ bool miller_rabin_is_prime(int n) {
     d = tmp;
 
     for (int i0 = 0; i0 < K; i0++) {
-        int a = rng()%(n-1);
-        while (a < 2) a = rng()%(n-1);
+        int a = abs((int)rng())%(n-1);
+        while (a < 2) a = abs((int)rng())%(n-1);
         int x = bExpo(a, d, n);
         int y;
         for (int i1 = 0; i1 < s; i1++) {
@@ -50,14 +50,21 @@ bool miller_rabin_is_prime(int n) {
 }
 
 bool is_prime(int n) {
-    if (!(n&1) || n < 2) return 0;
+    if ((!(n&1) && n != 2) || n < 2) return 0;
     for (int i = 0; i < NUMPRIMES; i++) {
+        if (n == primes[i]) return 1;
         if (n%primes[i] == 0) return 0;
     }
     return miller_rabin_is_prime(n);
 }
 
-int main() {
 
+bool bruteforce(int n) {
+    for (int i = 2; i*i <= n; i++) {
+        if (n%i == 0) return 0;
+    }
+    return 1;
+}
+signed main() {
 
 }

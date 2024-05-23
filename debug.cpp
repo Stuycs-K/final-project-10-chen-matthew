@@ -1,4 +1,6 @@
 //source https://gist.github.com/SansPapyrus683/61b65d4d7ec223b48ebf5c3bb382ba8d
+#ifndef LOCAL
+
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -140,3 +142,5 @@ std::ostream& operator<<(std::ostream& out, const std::tuple<Types...>& value) {
 }
 
 #define debug(x) cout << (#x) << ": " << (x) << '\n'
+
+#endif
