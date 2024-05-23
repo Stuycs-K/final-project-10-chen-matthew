@@ -4,6 +4,7 @@ using namespace std;
 using ll = long long;
 
 const int K = 40;
+const int EXP = 65537;//public, 2^16 + 1
 const int NUMPRIMES = 18;
 const int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61};
 
@@ -58,13 +59,22 @@ bool is_prime(int n) {
     return miller_rabin_is_prime(n);
 }
 
+array<int,3> bezouts_euclidean(int a, int b) {
+    //array<int,3> 
 
-bool bruteforce(int n) {
-    for (int i = 2; i*i <= n; i++) {
-        if (n%i == 0) return 0;
-    }
-    return 1;
 }
-signed main() {
 
+signed main() {
+    int p = abs((int)rng())|1, q = abs((int)rng())|1;//private
+    debug(p);
+    debug(q);
+    while (!is_prime(p)) p += 2;
+    while (!is_prime(q)) q += 2;
+
+    int n = p*q;//public
+    int totient = lcm(p-1,q-1);//private
+    int d; //incomplete, should be inverse of e mod totient
+    
+    //public values are n and EXP
+    //this will be used for key generation
 }
