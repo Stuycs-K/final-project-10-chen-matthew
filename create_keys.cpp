@@ -3,8 +3,9 @@
 using namespace std;
 using ll = long long;
 
-const int K = 40;
 const int EXP = 65537;//public, 2^16 + 1
+
+const int K = 40;
 const int NUMPRIMES = 18;
 const int primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61};
 
@@ -59,13 +60,30 @@ bool is_prime(int n) {
     return miller_rabin_is_prime(n);
 }
 
-array<int,3> bezouts_euclidean(int a, int b) {
-    //array<int,3> 
-
+//taken from cp algo
+int extended_gcd(int a, int b, int& x, int& y) {
+    x = 1, y = 0;
+    int x1 = 0, y1 = 1, a1 = a, b1 = b;
+    while (b1) {
+        int q = a1 / b1;
+        tie(x, x1) = make_tuple(x1, x - q * x1);
+        tie(y, y1) = make_tuple(y1, y - q * y1);
+        tie(a1, b1) = make_tuple(b1, a1 - q * b1);
+    }
+    return a1;
 }
 
-signed main() {
-    int p = abs((int)rng())|1, q = abs((int)rng())|1;//private
+int modular_inverse(int v, int m) {
+    v %= m;
+    int a = v, b = m, x, y;
+    int g = extended_gcd(a,b,x,y);
+    assert(g == 1);
+    return (x+m)%m;
+}
+
+int main(int argc, char* argv[]) {
+    int p = 97, q = 1E9+7;
+    //int p = abs((int)rng())|1, q = abs((int)rng())|1;//private
     debug(p);
     debug(q);
     while (!is_prime(p)) p += 2;
@@ -73,8 +91,11 @@ signed main() {
 
     int n = p*q;//public
     int totient = lcm(p-1,q-1);//private
-    int d; //incomplete, should be inverse of e mod totient
+    int d = modular_inverse(EXP, totient); //incomplete, should be inverse of e mod totient
     
-    //public values are n and EXP
-    //this will be used for key generation
+    //public key is (n, EXP), used for encrypt_message.cpp
+    //private key is (n, d), used for decrypt_message.cpp
+    printf("Your public key will be (%d, %d)\n", n, EXP);
+    printf("Your private key will be (%d, %d)\n", n, d);
+    return 0;
 }
