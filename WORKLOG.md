@@ -20,3 +20,11 @@
 -used `extended_gcd` to create `modular_inverse` which calculates modular inverse of v (mod m)
 -started writing `encrypt_message.cpp`
 -might reorganize math functions into separate header
+
+### 5/26 At home
+-reorganized math functions into `math_lib.cpp`
+-cleaned up some code in other files
+
+### 5/27 At home
+-created `encrypt_message.cpp` and `decrypt_message.cpp`
+-started working on `crack_message.cpp`

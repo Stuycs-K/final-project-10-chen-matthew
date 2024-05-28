@@ -3,7 +3,7 @@
 const int EXP = 65537;//public, 2^16 + 1
 
 //note: lcm only works in c++17 so use that flag
-int main(int argc, char* argv[]) {
+int main() {
     int p = 97, q = 1E9+7;
     //int p = abs((int)rng())|1, q = abs((int)rng())|1;//private
     debug(p);
