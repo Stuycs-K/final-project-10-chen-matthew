@@ -1,23 +1,36 @@
-#include "math_lib.cpp"
+#include <bits/stdc++.h>
+#include <gmpxx.h>
+#include "debug.cpp"
+
+using namespace std;
 
 const int EXP = 65537;//public, 2^16 + 1
+const int N = 70;//primes range from 2**(N-1) to 2**N-1
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-//note: lcm only works in c++17 so use that flag
 int main() {
-    int p = 97, q = 1E9+7;
-    //int p = abs((int)rng())|1, q = abs((int)rng())|1;//private
-    debug(p);
-    debug(q);
-    while (!is_prime(p)) p += 2;
-    while (!is_prime(q)) q += 2;
+    gmp_randclass rando(gmp_randinit_mt);
+    rando.seed(rng());
+    mpz_class p = rando.get_z_bits(N), q = rando.get_z_bits(N);
+    mpz_nextprime(p.get_mpz_t(), p.get_mpz_t());
+    mpz_nextprime(q.get_mpz_t(), q.get_mpz_t());
 
-    int n = p*q;//public
-    int totient = lcm(p-1,q-1);
-    int d = modular_inverse(EXP, totient); //incomplete, should be inverse of e mod totient
+    mpz_class n = p*q;
+    mpz_class totient, a = p-1, b = q-1;
+    mpz_lcm(totient.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
+
+    mpz_class d;
+    mpz_invert(d.get_mpz_t(), ((mpz_class)EXP).get_mpz_t(), totient.get_mpz_t());
     
+    /*debug(p);
+    debug(q);
+    debug(n);
+    debug(totient);
+    debug(d);*/
+
     //public key is (n, EXP), used for encrypt_message.cpp
     //private key is (n, d), used for decrypt_message.cpp
-    printf("Your public key will be (%d, %d)\n", n, EXP);
-    printf("Your private key will be (%d, %d)\n", n, d);
+    gmp_printf("Your public key will be (%Zd, %d)\n", n, EXP);
+    gmp_printf("Your private key will be (%Zd, %Zd)\n", n, d);
     return 0;
 }

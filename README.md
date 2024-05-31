@@ -5,3 +5,5 @@
 ## Group Info
 ## Overview
 ## Instructions
+First run `sudo apt-get install libgmp-dev libgmpxx4ldbl` to download GNU Multiple Precision Library
+Note: C++ files should be compiled with `g++ prog.cpp -lgmp -lgmpxx`

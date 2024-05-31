@@ -28,3 +28,21 @@
 ### 5/27 At home
 -created `encrypt_message.cpp` and `decrypt_message.cpp`
 -started working on `crack_message.cpp`
+
+### 5/28 In class
+-started working on my own BigInteger class
+
+### 5/28 At home
+-researched and found out there's GMP bignum library for C++
+
+### 5/29 In class & At home
+-spent time googling documentation and stackoverflow posts to set up the library (got nowhere though)
+
+### 5/30 In class
+-found a post using `sudo apt-get install libgmp-dev libgmpxx4ldbl`, still trying to set it up
+
+### 5/30 At Home
+-finally set up the library, started learning its documentation
+-deleted `math_lib.cpp` and replaced functions it contained with built in library methods from GMP
+-revised `encrypt_message.cpp`, `decrypt_message.cpp`, and `create_keys.cpp` with GMP library, now it works for any sized integer
+-note: `crack_message.cpp` still in progress
