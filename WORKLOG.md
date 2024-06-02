@@ -46,3 +46,12 @@
 -deleted `math_lib.cpp` and replaced functions it contained with built in library methods from GMP
 -revised `encrypt_message.cpp`, `decrypt_message.cpp`, and `create_keys.cpp` with GMP library, now it works for any sized integer
 -note: `crack_message.cpp` still in progress
+
+### 5/31 In class
+-continue reading the specifics of quadratic sieve
+
+### 6/1 At home
+-note that B is currently a constant
+-completed first sieve portion to obtain the factor base
+-written a bruteforce solution to get B-smooth numbers
+-put some defines in debug.cpp so gmp's method names are shorter

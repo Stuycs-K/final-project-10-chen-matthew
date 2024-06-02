@@ -12,15 +12,15 @@ int main() {
     gmp_randclass rando(gmp_randinit_mt);
     rando.seed(rng());
     mpz_class p = rando.get_z_bits(N), q = rando.get_z_bits(N);
-    mpz_nextprime(p.get_mpz_t(), p.get_mpz_t());
-    mpz_nextprime(q.get_mpz_t(), q.get_mpz_t());
+    mpz_nextprime(p.get(), p.get());
+    mpz_nextprime(q.get(), q.get());
 
     mpz_class n = p*q;
     mpz_class totient, a = p-1, b = q-1;
-    mpz_lcm(totient.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
+    mpz_lcm(totient.get(), a.get(), b.get());
 
     mpz_class d;
-    mpz_invert(d.get_mpz_t(), ((mpz_class)EXP).get_mpz_t(), totient.get_mpz_t());
+    mpz_invert(d.get(), ((mpz_class)EXP).get(), totient.get());
     
     /*debug(p);
     debug(q);
