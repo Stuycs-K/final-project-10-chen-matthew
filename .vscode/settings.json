@@ -11,6 +11,12 @@
         "optional": "cpp",
         "*.tcc": "cpp",
         "cmath": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "valarray": "cpp",
+        "ranges": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "functional": "cpp"
     }
 }

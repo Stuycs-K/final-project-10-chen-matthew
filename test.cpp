@@ -1,6 +1,9 @@
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
 #include<bits/stdc++.h>
+#include <gmpxx.h>
 using namespace std;
-
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 vector<bool> nullspace(vector<vector<bool>>& a) {
     int n = a.size();
     int m = a[0].size();
@@ -80,7 +83,7 @@ int main() {
         {0,1,1,1},
         {1,1,0,1}
     };*/
-    vector<vector<double>> a = {
+    vector<vector<int>> a = {
         {1,3,3,2},
         {2,6,9,7},
         {-1,-3,3,4}
@@ -89,6 +92,6 @@ int main() {
         {1,2,0,3},
         {2,4,0,7}
     };*/
-    nullspace(a);
+    //nullspace(a);
     for (auto i: a) debug(i);
 }

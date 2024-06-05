@@ -5,10 +5,10 @@
 using namespace std;
 
 const int EXP = 65537;//public, 2^16 + 1
-const int N = 30;//primes range from 2**(N-1) to 2**N-1
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int main() {
+int main(int argc, char* argv[]) {
+    const int N = atoi(argv[1]);//primes range from 2**(N-1) to 2**N-1
     gmp_randclass rando(gmp_randinit_mt);
     rando.seed(rng());
     mpz_class p = rando.get_z_bits(N), q = rando.get_z_bits(N);
@@ -22,12 +22,6 @@ int main() {
     mpz_class d;
     mpz_invert(d.get(), ((mpz_class)EXP).get(), totient.get());
     
-    /*debug(p);
-    debug(q);
-    debug(n);
-    debug(totient);
-    debug(d);*/
-
     //public key is (n, EXP), used for encrypt_message.cpp
     //private key is (n, d), used for decrypt_message.cpp
     gmp_printf("Your public key will be (%Zd, %d)\n", n, EXP);

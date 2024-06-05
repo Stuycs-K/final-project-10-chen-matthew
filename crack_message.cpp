@@ -1,13 +1,11 @@
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("lzcnt")
+
 #include <bits/stdc++.h>
 #include <gmpxx.h>
 #include "debug.cpp"
 
 using namespace std;
-
-//smoothness bound
-const int B = 50;
-//increase EPS to increase chances of nontrivial factor of N
-const int EPS = 10;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
@@ -17,7 +15,7 @@ bool is_quadratic_residue(mpz_class& n, int p) {
     return x == 1;
 }
 
-vector<bool> nullspace(vector<vector<bool>>& a) {
+void rref(vector<vector<bool>>& a) {
     int n = a.size();
     int m = a[0].size();
     //convert to echelon form (ref)
@@ -41,11 +39,8 @@ vector<bool> nullspace(vector<vector<bool>>& a) {
                 }
             }
         }
-        //for (auto i: a) debug(i);
-        //cout<<'\n';
     }
 
-    vector<int> pivot(n);
     //convert to row reduced echelon form (rref)
     for (int i = 0; i < n; i++) {
         int col = -1;
@@ -55,13 +50,7 @@ vector<bool> nullspace(vector<vector<bool>>& a) {
                 break;
             }
         }
-        pivot[i] = col;
         if (col == -1) continue;
-
-        /*bool val = a[i][col];
-        for (int j = 0; j < m; j++) {
-            a[i][j] /= val;
-        }*/
 
         //for each row above i
         for (int j = 0; j < i; j++) {
@@ -73,34 +62,20 @@ vector<bool> nullspace(vector<vector<bool>>& a) {
             }
         }
     }
-    //debug(pivot);
-
-    vector<bool> unknowns(m,1);
-    //for (int i = 0; i < m; i++) {
-    //    unknowns[i] = (abs((int)rng())%20 == 0);
-   // }
-    for (int i = 0; i < n; i++) {
-        if (pivot[i] != -1) {
-            bool sum = 0;
-            for (int j = pivot[i]+1; j < m; j++) {
-                sum ^= a[i][j] && unknowns[j];
-            }
-            unknowns[pivot[i]] = sum;
-        }
-    }
-    //debug(unknowns);
-    return unknowns;
 }
 
 int main(int argc, char* argv[]) {
-    assert(argc == 2);
     mpz_class n(argv[1]);
+    //smoothness bound, usually computation bottleneck
+    const int B = atoi(argv[2]);
+
+    //increase EPS to increase chances of nontrivial factor of N
+    const int EPS = atoi(argv[3]);
     //need to factorize n into p and q
     //return d to get private key
 
     //get all primes up to B
-    bitset<B> prime;
-    prime.set();
+    vector<bool> prime(B, 1);
     vector<int> factor_base;
     for (int i = 2; i <= B; i++) {
         if (prime[i]) {
@@ -115,19 +90,19 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    debug(factor_base.size());
 
     //assumes N isnt a trivial perfect square
     mpz_class root;
     mpz_sqrt(root.get(), n.get());
     root++;
-    debug(root);
 
     //bruteforce to find B-smooth numbers
+    vector<int> ind;
     vector<mpz_class> smooths;
     vector<vector<bool>> matrix;
-    for (;smooths.size() <= factor_base.size()+EPS; root++) {
-        mpz_class x = root*root - n;
+    for (int i = 0; smooths.size() <= factor_base.size()+EPS; i++) {
+        mpz_class r = root+i;
+        mpz_class x = r*r - n;
         vector<bool> freq(factor_base.size());
         for (int i = 0; i < factor_base.size(); i++) {
             int f = factor_base[i];
@@ -138,8 +113,9 @@ int main(int argc, char* argv[]) {
         }
         //B-smooth
         if (x == 1) {
-            smooths.push_back(root*root - n);
+            smooths.push_back(r*r - n);
             matrix.push_back(freq);
+            ind.push_back(i);
         }
     }
 
@@ -150,22 +126,56 @@ int main(int argc, char* argv[]) {
             matrix_t[j][i] = matrix[i][j];
         }
     }
-    for (auto& i: matrix_t) debug(i);
-    //now solve for SxM = [0 0 ... 0] on GF(2) by Gaussian Elim
 
-    vector<bool> sol = nullspace(matrix_t);
-    debug(sol);
-    debug(smooths);
+    //now solve for SxM = [0 0 ... 0] on GF(2) by using RREF form
+    rref(matrix_t);
+    vector<int> pivot(matrix_t.size());
+    vector<bool> unknowns(matrix_t[0].size());
+    for (int i = 0; i < matrix_t.size(); i++) {
+        int col = -1;
+        for (int j = 0; j < matrix_t[0].size(); j++) {
+            if (matrix_t[i][j] != 0) {
+                col = j;
+                break;
+            }
+        }
+        pivot[i] = col;
+    }
 
-    mpz_class prod = 1;
-    for (int i = 0; i < sol.size(); i++) {
-        if (sol[i]) {
-            prod *= smooths[i];
+    mpz_class prod = 1, sq;
+    do {
+        for (int i = 0; i < unknowns.size(); i++) {
+            unknowns[i] = (abs((int)rng())%(B/2) == 0);
+        }
+        for (int i = 0; i < matrix_t.size(); i++) {
+            if (pivot[i] != -1) {
+                for (int j = pivot[i]+1; j < matrix_t[0].size(); j++) {
+                    unknowns[pivot[i]] = unknowns[pivot[i]] ^ (matrix_t[i][j] && unknowns[j]);
+                }
+            }
+        }
+
+        prod = 1, sq = 1;
+        for (int i = 0; i < unknowns.size(); i++) {
+            if (unknowns[i]) {
+               prod *= smooths[i];
+            }
+        }
+        mpz_sqrt(sq.get(), prod.get());
+    } while (prod == 1 || prod != sq * sq);
+
+    mpz_class og = 1;
+    for (int i = 0; i < unknowns.size(); i++) {
+        if (unknowns[i]) {
+            og *= (root+ind[i]);
         }
     }
-    debug(prod);
 
-    mpz_class ss;
-    mpz_sqrt(ss.get(), prod.get());
-    debug(ss);
+    mpz_class gcd1, gcd2;
+    mpz_gcd(gcd1.get(), z(og+sq), n.get());
+    mpz_gcd(gcd2.get(), z(og-sq), n.get());
+    debug(gcd1);
+    debug(gcd2);
+
+    cout << "Time elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
 }

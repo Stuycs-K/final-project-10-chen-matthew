@@ -55,3 +55,13 @@
 -completed first sieve portion to obtain the factor base
 -written a bruteforce solution to get B-smooth numbers
 -put some defines in debug.cpp so gmp's method names are shorter
+
+### 6/3 In class & At home
+-taught myself some linear algebra from a textbook to evaluate nullspaces for quadratic sieve
+
+### 6/4 At home
+-wrote up a function to evaluate nullspaces
+-edited that function to work on binary matrices and convert input matrix into row reduced echelon form
+-used that function in `crack_message` to evaluate nullspaces
+-used nullspace to find potential factors
+-edited `crack_message` and `create_keys` to take in command arguments (refer to README)
