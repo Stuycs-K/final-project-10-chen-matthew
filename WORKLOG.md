@@ -65,8 +65,11 @@
 -used that function in `crack_message` to evaluate nullspaces
 -used nullspace to find potential factors
 -edited `crack_message` and `create_keys` to take in command arguments (refer to README)
+-added to `README.md` so it has instructions for how to use the project
 -drafted up a makefile
 
 ### 6/5 In class
 -corrected makefile so that the dependencies work
 -added a make clean option for convenience
+-added some comments to `crack_message` so that it's clearer to read
+-wrote up an outline for `PRESENTATION.md`
