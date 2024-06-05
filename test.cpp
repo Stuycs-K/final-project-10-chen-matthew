@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-vector<double> nullspace(vector<vector<double>>& a) {
+vector<bool> nullspace(vector<vector<bool>>& a) {
     int n = a.size();
     int m = a[0].size();
     //convert to echelon form (ref)
@@ -20,9 +20,8 @@ vector<double> nullspace(vector<vector<double>>& a) {
         
         for (int j = i+1; j < n; j++) {
             if (a[j][col] != 0) {
-                double scale = a[j][col]/a[i][col];
                 for (int k = col; k < m; k++) {
-                    a[j][k] -= scale*a[i][k];
+                    a[j][k] = a[j][k] ^ a[i][k];
                 }
             }
         }
@@ -43,30 +42,29 @@ vector<double> nullspace(vector<vector<double>>& a) {
         pivot[i] = col;
         if (col == -1) continue;
 
-        double val = a[i][col];
+        /*bool val = a[i][col];
         for (int j = 0; j < m; j++) {
             a[i][j] /= val;
-        }
+        }*/
 
         //for each row above i
         for (int j = 0; j < i; j++) {
             if (a[j][col] != 0) {
-                double scale = a[j][col];
                 //for each column after col in row j
                 for (int k = col; k < m; k++) {
-                    a[j][k] -= scale*a[i][k];
+                    a[j][k] = a[j][k] ^ a[i][k];
                 }
             }
         }
     }
     debug(pivot);
 
-    vector<double> unknowns(m, 1);//1 is just arbitrary value
+    vector<bool> unknowns(m, 1);//1 is just arbitrary value
     for (int i = 0; i < n; i++) {
         if (pivot[i] != -1) {
-            double sum = 0;
+            bool sum = 0;
             for (int j = pivot[i]+1; j < m; j++) {
-                sum -= a[i][j]*unknowns[j];
+                sum ^= a[i][j] && unknowns[j];
             }
             unknowns[pivot[i]] = sum;
         }
