@@ -5,7 +5,7 @@
 using namespace std;
 
 //smoothness bound
-const int B = 50;
+const int B = 500;
 //increase EPS to increase chances of nontrivial factor of N
 const int EPS = 10;
 
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    debug(factor_base);
+    debug(factor_base.size());
 
     //assumes N isnt a trivial perfect square
     mpz_class root;
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
             matrix.push_back(freq);
         }
     }
-    debug(smooths);
+    debug(smooths.size());
     for (auto& i: matrix) debug(i);
 
     //now solve for SxM = [0 0 ... 0] on GF(2) by Gaussian Elim

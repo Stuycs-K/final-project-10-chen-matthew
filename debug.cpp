@@ -147,3 +147,4 @@ std::ostream& operator<<(std::ostream& out, const std::tuple<Types...>& value) {
 
 #define get get_mpz_t
 #define z(x) mpz_class(x).get()
+#define f(x) mpf_class(x).get()

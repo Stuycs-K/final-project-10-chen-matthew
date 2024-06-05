@@ -4,6 +4,13 @@
         "tuple": "cpp",
         "iostream": "cpp",
         "system_error": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "any": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "optional": "cpp",
+        "*.tcc": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp"
     }
 }

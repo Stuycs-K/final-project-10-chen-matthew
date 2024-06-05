@@ -5,7 +5,7 @@
 using namespace std;
 
 const int EXP = 65537;//public, 2^16 + 1
-const int N = 70;//primes range from 2**(N-1) to 2**N-1
+const int N = 30;//primes range from 2**(N-1) to 2**N-1
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 int main() {
