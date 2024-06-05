@@ -65,3 +65,4 @@
 -used that function in `crack_message` to evaluate nullspaces
 -used nullspace to find potential factors
 -edited `crack_message` and `create_keys` to take in command arguments (refer to README)
+-drafted up a makefile
