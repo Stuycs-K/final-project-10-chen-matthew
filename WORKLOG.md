@@ -66,3 +66,7 @@
 -used nullspace to find potential factors
 -edited `crack_message` and `create_keys` to take in command arguments (refer to README)
 -drafted up a makefile
+
+### 6/5 In class
+-corrected makefile so that the dependencies work
+-added a make clean option for convenience

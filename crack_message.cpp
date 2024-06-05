@@ -1,3 +1,4 @@
+//some pragmas so it optimizes runtime
 #pragma GCC optimize("O3,unroll-loops")
 #pragma GCC target("lzcnt")
 
@@ -18,9 +19,11 @@ bool is_quadratic_residue(mpz_class& n, int p) {
 void rref(vector<vector<bool>>& a) {
     int n = a.size();
     int m = a[0].size();
+
     //convert to echelon form (ref)
     int col = 0;
     for (int i = 0; i < n; i++) {
+        //find a row with nonzero entry at col
         while (col < m && a[i][col] == 0) {
             for (int j = i; j < n; j++) {
                 if (a[j][col] != 0) {
@@ -31,7 +34,8 @@ void rref(vector<vector<bool>>& a) {
             if (a[i][col] == 0) col++;
         }
         if (col >= m) break;
-        
+
+        //reduce previous rows so that we obtain a triangular form        
         for (int j = i+1; j < n; j++) {
             if (a[j][col] != 0) {
                 for (int k = col; k < m; k++) {
@@ -145,7 +149,7 @@ int main(int argc, char* argv[]) {
     mpz_class prod = 1, sq;
     do {
         for (int i = 0; i < unknowns.size(); i++) {
-            unknowns[i] = (abs((int)rng())%(B/2) == 0);
+            unknowns[i] = (abs((int)rng())%(B/8+1) == 0);
         }
         for (int i = 0; i < matrix_t.size(); i++) {
             if (pivot[i] != -1) {

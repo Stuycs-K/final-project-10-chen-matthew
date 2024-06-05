@@ -1,3 +1,15 @@
+generate: genkey
+	@./genkey $(ARGS)
+
+crack: cr
+	@./cr $(ARGS)
+
+encrypt: en
+	@./en $(ARGS)
+
+decrypt: de
+	@./de $(ARGS)
+
 de:
 	@g++ decrypt_message.cpp -o de -lgmp -lgmpxx
 
@@ -10,14 +22,5 @@ cr:
 genkey:
 	@g++ create_keys.cpp -o genkey -lgmp -lgmpxx
 
-generate: genkey
-	@./genkey $ARGS)
-
-crack: cr
-	@./cr
-
-encrypt: en
-	@./en $(ARGS)
-
-decrypt: de
-	@./de $(ARGS)
+clean:
+	@rm -f genkey de en cr a.out
