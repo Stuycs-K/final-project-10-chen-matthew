@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     mpz_lcm(totient.get(), a.get(), b.get());
 
     mpz_class d;
-    mpz_invert(d.get(), ((mpz_class)EXP).get(), totient.get());
+    mpz_invert(d.get(), z(EXP), totient.get());
     
     //public key is (n, EXP), used for encrypt_message.cpp
     //private key is (n, d), used for decrypt_message.cpp
