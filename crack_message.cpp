@@ -71,7 +71,11 @@ void rref(vector<vector<bool>>& a) {
         }
     }
 }
+
+//just for convenience in reading
 using ll = long long;
+
+//binary exponentiation
 int modpow(ll b, ll k, const int mod) {
     int ans = 1%mod;
     b %= mod;
@@ -83,15 +87,17 @@ int modpow(ll b, ll k, const int mod) {
     }
     return ans;
 }
+
+//finds r such that r^2 mod p = a using shanks-tonelli algorithm
 int modulo_sqrt(int a, int p) {
     a %= p;
     if (a < 0) a += p;
     if (a == 0) return 0;
-    if (modpow(a, (p-1)/2, p) != 1) return -1; // solution does not exist
+    if (modpow(a, (p-1)/2, p) != 1) return -1;//no solution
     if (p%4 == 3) return modpow(a, (p+1)/4, p);
     int s = p-1, n = 2, r = 0, m;
     while (s%2 == 0) r++, s /= 2;
-    // find a non-square mod p
+    //setup done, now do shanks-tonelli
     while (modpow(n, (p-1)/2, p) != p-1) ++n;
     int x = modpow(a, (s+1)/2, p);
     int b = modpow(a, s, p), g = modpow(n, s, p);
@@ -133,7 +139,7 @@ int main(int argc, char* argv[]) {
                 factor_base.push_back(i);
             }
 
-            if ((long long)i*i > B) continue;
+            if ((ll)i*i > B) continue;
             //regular sieve to eliminate primes
             for (int j = i*i; j <= B; j += i) {
                 prime[j] = 0;
@@ -154,15 +160,18 @@ int main(int argc, char* argv[]) {
     vector<mpz_class> smooths;
     vector<vector<bool>> matrix;
     
-    //just so we can probably find enough smooth numbers
+    //1E7 which is large enough so we can probably find enough smooth numbers
+    //if we cant, increase 1E7 to 1E8 but it'll prob already be too big
     vector<array<mpz_class,2>> sieve(1E7);
     
+    //populate sieve, sieve[i][0] will be divided, sieve[i][1] just stores original
     for (int i = 0; i < sieve.size(); i++) {
         mpz_class r = root+i;
         sieve[i][0] = sieve[i][1] = r*r - n;
     }
 
     for (int j = 0; j < factor_base.size(); j++) {
+        //find the roots i of (root + i)^2 - n mod f
         int f = factor_base[j];
         mpz_class tmp = n%f;
         int uitmp = tmp.get_ui();
@@ -171,11 +180,13 @@ int main(int argc, char* argv[]) {
         int r1 = ((m - (int)tmp2.get_ui())%f+f)%f;
         int r2 = ((-m - (int)tmp2.get_ui())%f+f)%f;
 
+        //typical sieve-like setup
         for (int i = r1; i < sieve.size(); i += f) {
             while (sieve[i][0]%f == 0) {
                 sieve[i][0] /= f;
             }
         }
+        //check for the f = 2 case
         if (r1 == r2) continue;
         for (int i = r2; i < sieve.size(); i += f) {
             while (sieve[i][0]%f == 0) {
@@ -185,12 +196,13 @@ int main(int argc, char* argv[]) {
     }
     auto s3 = 1.0 * clock() / CLOCKS_PER_SEC;
     cout<<"finish sieve: "<<(s3-s2) << '\n';
-    //debug(factor_base);
-    //debug(sieve);
+
+    //find the B-smooth numbers and find the frequency of primes in its factored representation
     for (int i = 0; i < sieve.size(); i++) {
         if (sieve[i][0] == 1) {
             ind.push_back(i);
             smooths.push_back(sieve[i][1]);
+            //manually calculate the powers instead of storing in the sieve to reduce memory usage and time
             vector<bool> freq(factor_base.size());
             for (int j = 0; j < factor_base.size(); j++) {
                 int f = factor_base[j];
@@ -204,8 +216,6 @@ int main(int argc, char* argv[]) {
     }
     auto s4 = 1.0 * clock() / CLOCKS_PER_SEC;
     cout<<"find smooths: "<<(s4-s3) << '\n';
-    //debug(smooths);
-    //for (auto& i: matrix) debug(i);
    
     debug(smooths.size());
     debug(factor_base.size());
