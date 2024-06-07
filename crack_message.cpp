@@ -72,6 +72,38 @@ void rref(vector<vector<bool>>& a) {
     }
 }
 
+int power(long long n, long long k, const int mod) {
+  int ans = 1 % mod; n %= mod; if (n < 0) n += mod;
+  while (k) {
+    if (k & 1) ans = (long long) ans * n % mod;
+    n = (long long) n * n % mod;
+    k >>= 1;
+  }
+  return ans;
+}
+int modulo_sqrt(int a, int p) {
+    a %= p; if (a < 0) a += p;
+    if (a == 0) return 0;
+    if (power(a, (p - 1) / 2, p) != 1) return -1; // solution does not exist
+    if (p % 4 == 3) return power(a, (p + 1) / 4, p);
+    int s = p - 1, n = 2;
+    int r = 0, m;
+    while (s % 2 == 0) ++r, s /= 2;
+    // find a non-square mod p
+    while (power(n, (p - 1) / 2, p) != p - 1) ++n;
+    int x = power(a, (s + 1) / 2, p);
+    int b = power(a, s, p), g = power(n, s, p);
+    for (;; r = m) {
+        int t = b;
+        for (m = 0; m < r && t != 1; ++m) t = 1LL * t * t % p;
+        if (m == 0) return x;
+        int gs = power(g, 1LL << (r - m - 1), p);
+        g = 1LL * gs * gs % p;
+        x = 1LL * x * gs % p;
+        b = 1LL * b * g % p;
+    }
+}
+
 int main(int argc, char* argv[]) {
     mpz_class n(argv[1]);
     //smoothness bound, usually the computation bottleneck so choose B wisely
