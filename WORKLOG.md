@@ -91,3 +91,8 @@
 -implemented `modulo_sqrt` using tonelli-shanks algorithm
 -optimized `crack_message` using different sieve method
 -added time stamps to analyze which code sections are taking the most time
+
+### 6/7 In class
+-completed first 3 sections of `PRESENTATION.md`
+-will reformat with math font and formatting later
+-will also write a custom bitset to speed up `crack_message`
