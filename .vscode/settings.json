@@ -18,6 +18,11 @@
         "string": "cpp",
         "vector": "cpp",
         "functional": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "span": "cpp",
+        "regex": "cpp",
+        "utility": "cpp"
     }
 }

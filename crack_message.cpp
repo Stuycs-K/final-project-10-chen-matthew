@@ -71,36 +71,38 @@ void rref(vector<vector<bool>>& a) {
         }
     }
 }
-
-int power(long long n, long long k, const int mod) {
-  int ans = 1 % mod; n %= mod; if (n < 0) n += mod;
-  while (k) {
-    if (k & 1) ans = (long long) ans * n % mod;
-    n = (long long) n * n % mod;
-    k >>= 1;
-  }
-  return ans;
+using ll = long long;
+int modpow(ll b, ll k, const int mod) {
+    int ans = 1%mod;
+    b %= mod;
+    if (b < 0) b += mod;
+    while (k) {
+        if (k&1) ans = (ll)ans*b%mod;
+        b = (ll)b*b%mod;
+        k >>= 1;
+    }
+    return ans;
 }
 int modulo_sqrt(int a, int p) {
-    a %= p; if (a < 0) a += p;
+    a %= p;
+    if (a < 0) a += p;
     if (a == 0) return 0;
-    if (power(a, (p - 1) / 2, p) != 1) return -1; // solution does not exist
-    if (p % 4 == 3) return power(a, (p + 1) / 4, p);
-    int s = p - 1, n = 2;
-    int r = 0, m;
-    while (s % 2 == 0) ++r, s /= 2;
+    if (modpow(a, (p-1)/2, p) != 1) return -1; // solution does not exist
+    if (p%4 == 3) return modpow(a, (p+1)/4, p);
+    int s = p-1, n = 2, r = 0, m;
+    while (s%2 == 0) r++, s /= 2;
     // find a non-square mod p
-    while (power(n, (p - 1) / 2, p) != p - 1) ++n;
-    int x = power(a, (s + 1) / 2, p);
-    int b = power(a, s, p), g = power(n, s, p);
+    while (modpow(n, (p-1)/2, p) != p-1) ++n;
+    int x = modpow(a, (s+1)/2, p);
+    int b = modpow(a, s, p), g = modpow(n, s, p);
     for (;; r = m) {
         int t = b;
-        for (m = 0; m < r && t != 1; ++m) t = 1LL * t * t % p;
+        for (m = 0; m < r && t != 1; m++) t = 1LL*t*t%p;
         if (m == 0) return x;
-        int gs = power(g, 1LL << (r - m - 1), p);
-        g = 1LL * gs * gs % p;
-        x = 1LL * x * gs % p;
-        b = 1LL * b * g % p;
+        int gg = modpow(g, 1LL<<(r-m-1LL), p);
+        g = 1LL*gg*gg%p;
+        x = 1LL*x*gg%p;
+        b = 1LL*b*g%p;
     }
 }
 
@@ -111,9 +113,14 @@ int main(int argc, char* argv[]) {
 
     //increase EPS to increase chances of nontrivial factor of N
     const int EPS = atoi(argv[3]);
+    
+    //just a number to pad out our matrix
+    const int PAD = 10;
 
     //our goal is to factorize n into p and q
     //then, return d which is private key
+
+    auto s1 = 1.0 * clock() / CLOCKS_PER_SEC;
 
     //get all primes up to B
     vector<bool> prime(B, 1);
@@ -134,6 +141,9 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    auto s2 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"find factor base: "<<(s2-s1) << '\n';
+
     //assumes N isnt a trivial perfect square, otherwise we can just return root
     mpz_class root;
     mpz_sqrt(root.get(), n.get());
@@ -143,27 +153,64 @@ int main(int argc, char* argv[]) {
     vector<int> ind;
     vector<mpz_class> smooths;
     vector<vector<bool>> matrix;
-    for (int i = 0; smooths.size() <= factor_base.size()+EPS; i++) {
+    
+    //just so we can probably find enough smooth numbers
+    vector<array<mpz_class,2>> sieve(1E7);
+    
+    for (int i = 0; i < sieve.size(); i++) {
         mpz_class r = root+i;
-        mpz_class x = r*r - n;
-        //the exponent of all primes in factored form of r reduced to binary
-        vector<bool> freq(factor_base.size());
-        for (int i = 0; i < factor_base.size(); i++) {
-            int f = factor_base[i];
-            while (x%f == 0) {
-                x /= f;
-                freq[i] = freq[i]^1;
+        sieve[i][0] = sieve[i][1] = r*r - n;
+    }
+
+    for (int j = 0; j < factor_base.size(); j++) {
+        int f = factor_base[j];
+        mpz_class tmp = n%f;
+        int uitmp = tmp.get_ui();
+        mpz_class tmp2 = root%f;
+        int m = modulo_sqrt(uitmp, f);
+        int r1 = ((m - (int)tmp2.get_ui())%f+f)%f;
+        int r2 = ((-m - (int)tmp2.get_ui())%f+f)%f;
+
+        for (int i = r1; i < sieve.size(); i += f) {
+            while (sieve[i][0]%f == 0) {
+                sieve[i][0] /= f;
             }
         }
-
-        //our number is B-smooth
-        if (x == 1) {
-            smooths.push_back(r*r - n);
-            matrix.push_back(freq);
-            //keep ind so we can obtain both original square and the difference between square and N
-            ind.push_back(i);
+        if (r1 == r2) continue;
+        for (int i = r2; i < sieve.size(); i += f) {
+            while (sieve[i][0]%f == 0) {
+                sieve[i][0] /= f;
+            }
         }
     }
+    auto s3 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"finish sieve: "<<(s3-s2) << '\n';
+    //debug(factor_base);
+    //debug(sieve);
+    for (int i = 0; i < sieve.size(); i++) {
+        if (sieve[i][0] == 1) {
+            ind.push_back(i);
+            smooths.push_back(sieve[i][1]);
+            vector<bool> freq(factor_base.size());
+            for (int j = 0; j < factor_base.size(); j++) {
+                int f = factor_base[j];
+                while (sieve[i][1]%f == 0) {
+                    sieve[i][1] /= f;
+                    freq[j] = freq[j]^1;
+                }
+            }
+            matrix.push_back(freq);
+        }
+    }
+    auto s4 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"find smooths: "<<(s4-s3) << '\n';
+    //debug(smooths);
+    //for (auto& i: matrix) debug(i);
+   
+    debug(smooths.size());
+    debug(factor_base.size());
+    //B isnt large enough
+    assert(smooths.size() > factor_base.size());
 
     //transpose matrix (ie flip matrix across diagonal) so we can use rref on it
     vector<vector<bool>> matrix_t(matrix[0].size(), vector<bool>(matrix.size()));
@@ -173,11 +220,17 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    auto s5 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"flip matrix: "<<(s5-s4) << '\n';
+
     //now solve for x in Ax = [0 0 ... 0] on GF(2) by using RREF form
     rref(matrix_t);
     vector<int> pivot(matrix_t.size());
     //unknowns is our solution vector
     vector<bool> unknowns(matrix_t[0].size());
+
+    auto s6 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"convert rref: "<<(s6-s5) << '\n';
 
     //find all the pivots in each row
     for (int i = 0; i < matrix_t.size(); i++) {
@@ -196,7 +249,7 @@ int main(int argc, char* argv[]) {
     do {
         for (int i = 0; i < unknowns.size(); i++) {
             //B/8 is arbitrary, might want to change it depending on how frequent our trivial factors are
-            unknowns[i] = (abs((int)rng())%(B/8+1) == 0);
+            unknowns[i] = (abs((int)rng())%(B/EPS+1) == 0);
         }
         for (int i = 0; i < matrix_t.size(); i++) {
             if (pivot[i] != -1) {
@@ -215,6 +268,9 @@ int main(int argc, char* argv[]) {
         }
         mpz_sqrt(sq.get(), prod.get());
     } while (prod == 1 || prod != sq * sq);
+
+    auto s7 = 1.0 * clock() / CLOCKS_PER_SEC;
+    cout<<"repeat for nontrivial: "<<(s7-s6) << '\n';
 
     //lefthand side product
     mpz_class og = 1;

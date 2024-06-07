@@ -83,4 +83,11 @@
 
 ### 6/5 At home
 -did testing on `crack_message`
--
+-used `create_keys` to generate 30, 40, 50 bit primes
+-`crack_message` works under 30 secs for 
+
+### 6/6 At home
+-did reading on alternate ways to find B-smooth numbers instead of bruteforcing
+-implemented `modulo_sqrt` using tonelli-shanks algorithm
+-optimized `crack_message` using different sieve method
+-added time stamps to analyze which code sections are taking the most time
