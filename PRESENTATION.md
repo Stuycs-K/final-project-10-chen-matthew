@@ -16,33 +16,34 @@ The product of these two big primes will be $n$
 
 $E$ can be any arbitrary positive integer, as long as its big (usually we use $E = 2^{16}+1$)  
 We want to evalulate $\lambda(n) = lcm(p-1,q-1)$ (this is Carmichael's lambda function)  
-$d$ will be $d = E^{-1} \mod{\lambda(n)}$  
+$d$ will be $d = E^{-1} \pmod{\lambda(n)}$  
 
 $n$ and $E$ will both be publicly shared and our public key is the pair $(n,E)$  
 $p$, $q$, and $d$ should not be shared and our private key is the pair $(n,d)$  
+<br>
 
 ### How do we encrypt using RSA?
 Let's say Bob wants to send Alice an important number, lets call $m$ (note $m < n$)  
 Bob knows Alice's public key since she openly advertises it  
-Bob can convert his important number into a new number, say $g$, by doing $g = m^E \mod{n}$  
+Bob can convert his important number into a new number, say $g$, by doing $g = m^E \pmod{n}$  
 Then, Bob can send $g$ to Alice so if any third party somehow obtains $g$, they cannot obtain the original number $m$ unless they're Alice  
 <br>
 
 ### How can Alice revert $g$ back into $m$?  
-Well, $d$ has the special property that $m = g^d \mod{n}$ so by simply repeating the exponentiation, we get back our original message  
+Well, $d$ has the special property that $m = g^d \pmod{n}$ so by simply repeating the exponentiation, we get back our original message  
 <br>
 
 <!--a brief proof-->
 ### Why does this work?
-I claim that $(m^E)^d \equiv m \mod{n}$  
-<!--$(m^e)^d = m^{e \cdot d} \mod{n}$  -->
-The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \mod{n}$  
-Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \mod{n}$  
-Or in other words: $a^b = a^{b \mod{\lambda(n)}} \mod{n}$ for any integers $a$,$b$  
+I claim that $(m^E)^d \equiv m \pmod{n}$  
+<!--$(m^e)^d = m^{e \cdot d} \pmod{n}$  -->
+The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \pmod{n}$  
+Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \pmod{n}$  
+Or in other words: $a^b = a^{b \pmod{\lambda(n)}} \pmod{n}$ for any integers $a$,$b$  
 
-Also note that $E \cdot d = 1 \mod{\lambda(n)}$ by definition of $d$  
+Also note that $E \cdot d = 1 \pmod{\lambda(n)}$ by definition of $d$  
 
-Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed \mod{\lambda(n)}} \equiv m^1 \mod{n}$  
+Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed \pmod{\lambda(n)}} \equiv m^1 \pmod{n}$  
 <br>
 
 ## Why is it secure?
@@ -87,12 +88,51 @@ Although faster, it's still not efficient enough.
 
 ## How does Quadratic Sieve attempt to factor a large number n
 Quadratic sieve takes inspiration from the method described above.  
-We aim to find two integers such that $a^2 \equiv b^2 \mod{n}$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
+We aim to find two integers such that $a^2 \equiv b^2 \pmod{n}$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
 However, it's very rare to have two congruent perfect squares mod $n$ so instead, we look for a set of perfect squares such that their residues multiply to a perfect square    
 
 Let's try an example  
-If we have $n = ..........$, we can start evaluating squares and their residues starting from $\lceil{\sqrt{n}}\ \rceil$  
+If we have $n = 2231$, we can start evaluating squares and their residues starting from $\lceil{\sqrt{n}}\ \rceil$  
 
+$48^2 \equiv 73 \pmod n$  
+$49^2 \equiv 170 \pmod n$  
+$50^2 \equiv 269 \pmod n$  
+$51^2 \equiv 370 \pmod n$  
+$52^2 \equiv 473 \pmod n$  
+$53^2 \equiv 578 \pmod n$  
+$54^2 \equiv 685 \pmod n$  
+$55^2 \equiv 794 \pmod n$  
+$56^2 \equiv 905 \pmod n$  
+$57^2 \equiv 1018 \pmod n$  
+$58^2 \equiv 1133 \pmod n$  
+$59^2 \equiv 1250 \pmod n$  
+$60^2 \equiv 1369 \pmod n$  
+$61^2 \equiv 1490 \pmod n$  
+$62^2 \equiv 1613 \pmod n$  
+$63^2 \equiv 1738 \pmod n$  
+$64^2 \equiv 1865 \pmod n$  
+$65^2 \equiv 1994 \pmod n$  
+$66^2 \equiv 2125 \pmod n$  
+
+None of these have residues which are perfect squares so we cannot use Fermat's method. However if we multiply these relations:  
+$49^2 \equiv 170 \pmod n$  
+$53^2 \equiv 578 \pmod n$  
+$66^2 \equiv 2125 \pmod n$  
+
+We get:  
+$(49 \cdot 53 \cdot 66)^2 \equiv (170 \cdot 578 \cdot 2125) \pmod n$  
+$171402^2 \equiv 14450^2 \pmod n$
+
+Aha! We've just created a relation with two perfect squares  
+Now, if we do $\gcd(171402-14450,n)$ and $\gcd(171402+14450,n)$, we will obtain $23$, and $97$.  
+And indeed, $23 \cdot 97 = 2231$.  
+
+Regarding how we're going to algorithmize this process, it will require some heavy maths topics like  
+- Euler's criterion for quadratic reciprocity  
+- Solving for nullspaces from linear algebra  
+- Tonelli–Shanks algorithm for solving modular square roots  
+
+So if you'd like to read more, feel free to research on your own or read my code  
 
 ## Compare Quadratic Sieve to Trial Division
 

@@ -103,3 +103,7 @@
 -included LaTeX formatting to the math expressions  
 -completed a proof for correctness of RSA  
 -did some explanation for quadratic sieve explanation in `PRESENTATION.md`
+
+### 6/9 At home
+-Completed a section in the quadratic sieve presentation
+-Reformatted all of the math and number expressions
