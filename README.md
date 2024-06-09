@@ -3,10 +3,14 @@
 ## Group Info
 Group members: Matthew Chen  
 Group name: Mogussy  
-Topic: RSA Encryption/Decryption and Quadratic Sieve to crack RSA (for relatively small primes)  
+Topic: RSA Encryption/Decryption and Quadratic Sieve to crack RSA  
 
 ## Overview
-
+This project implements RSA Encryption, Decryption, and Quadratic Sieve to crack RSA quickly for numbers less than 40 digits  
+`create_keys.cpp` takes a specified number of bits and generates public and private keys with modulus with at least that many bits  
+`encrypt_message.cpp` takes a public key and message and returns an encrypted version of that message  
+`decrypt_message.cpp` takes a private key and message and returns the decrypted, original message  
+`crack_message.cpp` takes a public key and an arbitrary bound EPS and returns the private key
 
 ## Instructions
 First run `sudo apt-get install libgmp-dev libgmpxx4ldbl` to download GNU Multiple Precision Library  
@@ -14,19 +18,24 @@ Note:
 - C++ files should be compiled with `g++ prog.cpp -lgmp -lgmpxx`  
 - Make sure version is C++17 or above
 
-### How to use `create_keys.cpp`  
-`g++ create_keys.cpp -o genkey -lgmp -lgmpxx`  
-`./genkey [K]`  
+### How to generate RSA private/public key pairs
+`make generate ARGS="[K]"`
 - Generates public and private keys
 - Uses two K bit prime numbers
 
-### How to use `crack_message.cpp`  
-`g++ crack_message.cpp -o crack -lgmp -lgmpxx`  
-`./crack [N] [B] [EPS]`  
-- N is number we want to factor  
-- B is smoothness bound 
-    - Can be evaluated with a math formula to optimize runtime
-    - Higher smoothness bound means higher probability that numbers chosen to generate the exponent matrix will be B-smooth but tradeoff is each number needs to be iterated with more primes
-    - Lower smoothness bound means less primes to iterate through per number but more numbers to iterate through since less of them will be B-smooth
-- EPS is probability of nontrivial factors
-    - Higher EPS means resulting numbers are more likely to be non-trivial factors of N (ie factors other than 1 and N) but also means more additional numbers to save into exponent matrix
+### How to encrypt your message
+`make encrypt ARGS="[N] [E] [M]"`
+- N and E are the values from the public key
+- M is the message number, make sure M < N
+
+### How to decrypt your message
+`make decrypt ARGS="[N] [D] [C]"`
+- N and D are the values from the private key
+- C is the encrypted message
+
+### How to attempt to crack and obtain the private key from the public key
+`make crack ARGS="[N] [E] [EPS]"`
+- N and E are the values from the public key
+- EPS is probability of getting a valid private key
+    - Higher EPS means factors of N are more likely to be nontrivial and the private key is more likely to be correct
+    - Tradeoff is the runtime, higher the EPS, the slower it gets
