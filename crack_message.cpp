@@ -120,9 +120,6 @@ int main(int argc, char* argv[]) {
     //increase EPS to increase chances of nontrivial factor of N
     const int EPS = atoi(argv[3]);
     
-    //just a number to pad out our matrix
-    const int PAD = 10;
-
     //our goal is to factorize n into p and q
     //then, return d which is private key
 
@@ -132,16 +129,16 @@ int main(int argc, char* argv[]) {
     vector<bool> prime(B, 1);
     //primes less than or equal to B where N is a quadratic residue with that prime as mod
     vector<int> factor_base;
-    for (int i = 2; i <= B; i++) {
+    for (int i = 2; i < B; i++) {
         if (prime[i]) {
             //filter using euler's criterion to see when n is a quad residue mod i
             if (is_quadratic_residue(n, i)) {
                 factor_base.push_back(i);
             }
 
-            if ((ll)i*i > B) continue;
+            if ((ll)i*i >= B) continue;
             //regular sieve to eliminate primes
-            for (int j = i*i; j <= B; j += i) {
+            for (int j = i*i; j < B; j += i) {
                 prime[j] = 0;
             }
         }

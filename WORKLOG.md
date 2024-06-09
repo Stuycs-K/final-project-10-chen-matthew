@@ -96,3 +96,8 @@
 -completed first 3 sections of `PRESENTATION.md`
 -will reformat with math font and formatting later
 -will also write a custom bitset to speed up `crack_message`
+
+### 6/8 At home
+-fixed some small bugs in `crack_message` with index bounding
+-revised and reorganized `PRESENTATION.MD`
+-included LaTeX formatting to the math expressions
