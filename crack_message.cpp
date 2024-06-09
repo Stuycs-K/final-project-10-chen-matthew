@@ -76,14 +76,14 @@ void rref(vector<vector<bool>>& a) {
 using ll = long long;
 
 //binary exponentiation
-int modpow(ll b, ll k, const int mod) {
+int modpow(ll b, ll p, const int mod) {
     int ans = 1%mod;
     b %= mod;
     if (b < 0) b += mod;
-    while (k) {
-        if (k&1) ans = (ll)ans*b%mod;
+    while (p) {
+        if (p&1) ans = (ll)ans*b%mod;
         b = (ll)b*b%mod;
-        k >>= 1;
+        p >>= 1;
     }
     return ans;
 }
@@ -91,31 +91,39 @@ int modpow(ll b, ll k, const int mod) {
 //finds r such that r^2 mod p = a using shanks-tonelli algorithm
 int modulo_sqrt(int a, int p) {
     a %= p;
+
     if (a < 0) a += p;
     if (a == 0) return 0;
     if (modpow(a, (p-1)/2, p) != 1) return -1;//no solution
     if (p%4 == 3) return modpow(a, (p+1)/4, p);
+    //casework done
+
     int s = p-1, n = 2, r = 0, m;
     while (s%2 == 0) r++, s /= 2;
+    while (modpow(n, (p-1)/2, p) != p-1) n++;
     //setup done, now do shanks-tonelli
-    while (modpow(n, (p-1)/2, p) != p-1) ++n;
+
     int x = modpow(a, (s+1)/2, p);
-    int b = modpow(a, s, p), g = modpow(n, s, p);
+    int b = modpow(a, s, p);
+    int g = modpow(n, s, p);
     for (;; r = m) {
-        int t = b;
-        for (m = 0; m < r && t != 1; m++) t = 1LL*t*t%p;
-        if (m == 0) return x;
-        int gg = modpow(g, 1LL<<(r-m-1LL), p);
-        g = 1LL*gg*gg%p;
-        x = 1LL*x*gg%p;
-        b = 1LL*b*g%p;
+        int tmp = b;
+        for (m = 0; m < r && tmp != 1; m++) {
+            tmp = (ll)tmp*tmp%p;
+        }
+        if (m == 0ll) return x;
+        int gg = modpow(g, 1ll<<(r-m-1ll), p);
+        g = (ll)gg*gg%p;
+        x = (ll)x*gg%p;
+        b = (ll)b*g%p;
     }
 }
 
 int main(int argc, char* argv[]) {
     mpz_class n(argv[1]);
+    mpz_class EXP(argv[2]);
     //smoothness bound, usually the computation bottleneck so choose B wisely
-    const int B = atoi(argv[2]);
+    const int B = (int)exp(0.6 * sqrt(log(mpz_get_d(n.get())) * log(log(mpz_get_d(n.get())))));
 
     //increase EPS to increase chances of nontrivial factor of N
     const int EPS = atoi(argv[3]);
@@ -123,7 +131,7 @@ int main(int argc, char* argv[]) {
     //our goal is to factorize n into p and q
     //then, return d which is private key
 
-    auto s1 = 1.0 * clock() / CLOCKS_PER_SEC;
+//auto s1 = 1.0 * clock() / CLOCKS_PER_SEC;
 
     //get all primes up to B
     vector<bool> prime(B, 1);
@@ -144,8 +152,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    auto s2 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"find factor base: "<<(s2-s1) << '\n';
+//auto s2 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"find factor base: "<<(s2-s1) << '\n';
 
     //assumes N isnt a trivial perfect square, otherwise we can just return root
     mpz_class root;
@@ -159,7 +167,7 @@ int main(int argc, char* argv[]) {
     
     //1E7 which is large enough so we can probably find enough smooth numbers
     //if we cant, increase 1E7 to 1E8 but it'll prob already be too big
-    vector<array<mpz_class,2>> sieve(1E7);
+    vector<array<mpz_class,2>> sieve(1E6);
     
     //populate sieve, sieve[i][0] will be divided, sieve[i][1] just stores original
     for (int i = 0; i < sieve.size(); i++) {
@@ -191,8 +199,8 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    auto s3 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"finish sieve: "<<(s3-s2) << '\n';
+//auto s3 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"finish sieve: "<<(s3-s2) << '\n';
 
     //find the B-smooth numbers and find the frequency of primes in its factored representation
     for (int i = 0; i < sieve.size(); i++) {
@@ -211,13 +219,17 @@ int main(int argc, char* argv[]) {
             matrix.push_back(freq);
         }
     }
-    auto s4 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"find smooths: "<<(s4-s3) << '\n';
+//auto s4 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"find smooths: "<<(s4-s3) << '\n';
    
-    debug(smooths.size());
-    debug(factor_base.size());
+//debug(smooths.size());
+//debug(factor_base.size());
     //B isnt large enough
-    assert(smooths.size() > factor_base.size());
+    //assert(smooths.size() > factor_base.size());
+    if (smooths.size() < factor_base.size()) {
+        cout << "B bound is not large enough\n";
+        return 0;
+    }
 
     //transpose matrix (ie flip matrix across diagonal) so we can use rref on it
     vector<vector<bool>> matrix_t(matrix[0].size(), vector<bool>(matrix.size()));
@@ -227,8 +239,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    auto s5 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"flip matrix: "<<(s5-s4) << '\n';
+//auto s5 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"flip matrix: "<<(s5-s4) << '\n';
 
     //now solve for x in Ax = [0 0 ... 0] on GF(2) by using RREF form
     rref(matrix_t);
@@ -236,8 +248,8 @@ int main(int argc, char* argv[]) {
     //unknowns is our solution vector
     vector<bool> unknowns(matrix_t[0].size());
 
-    auto s6 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"convert rref: "<<(s6-s5) << '\n';
+//auto s6 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"convert rref: "<<(s6-s5) << '\n';
 
     //find all the pivots in each row
     for (int i = 0; i < matrix_t.size(); i++) {
@@ -276,15 +288,15 @@ int main(int argc, char* argv[]) {
         mpz_sqrt(sq.get(), prod.get());
     } while (prod == 1 || prod != sq * sq);
 
-    auto s7 = 1.0 * clock() / CLOCKS_PER_SEC;
-    cout<<"repeat for nontrivial: "<<(s7-s6) << '\n';
+//auto s7 = 1.0 * clock() / CLOCKS_PER_SEC;
+//cout<<"repeat for nontrivial: "<<(s7-s6) << '\n';
 
     //lefthand side product
     mpz_class og = 1;
     for (int i = 0; i < unknowns.size(); i++) {
         if (unknowns[i]) {
             og *= (root+ind[i]);
-            debug(root+ind[i]);
+//debug(root+ind[i]);
         }
     }
 
@@ -292,12 +304,24 @@ int main(int argc, char* argv[]) {
     mpz_class gcd1, gcd2;
     mpz_gcd(gcd1.get(), z(og+sq), n.get());
     mpz_gcd(gcd2.get(), z(og-sq), n.get());
-    debug(gcd1);
-    debug(gcd2);
-    debug(smooths);
-    debug(unknowns);
-    debug(ind);
+//debug(gcd1);
+//debug(gcd2);
+//debug(smooths);
+//debug(unknowns);
+//debug(ind);
 
     //print runtime so we can compare to the trial division algorithm, also so we can choose better bounds on B
     cout << "Time elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+
+    if (gcd1 == 1 || gcd2 == 1) {
+        cout << "factorization failed, please retry with larger EPS\n";
+        return 0;
+    }
+
+    mpz_class totient, a = gcd1-1, b = gcd2-1;
+    mpz_lcm(totient.get(), a.get(), b.get());
+
+    mpz_class d;
+    mpz_invert(d.get(), EXP.get(), totient.get());
+    gmp_printf("Your private key is (%Zd %Zd)\n", n, d);
 }

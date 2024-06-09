@@ -1,5 +1,5 @@
 # RSA Encryption/Decryption and Cracking* with Quadratic Sieve
-
+*for numbers that don't exceed 40 digits
 ## How does RSA work?
 Our goal is to transfer a number that is less than a certain length over to the recipient  
 RSA achieves this by taking advantage of the difficulty involved with factoring in order to create a hard-to-crack encryption method  
@@ -134,6 +134,5 @@ Regarding how we're going to algorithmize this process, it will require some hea
 
 So if you'd like to read more, feel free to research on your own or read my code  
 
-## Compare Quadratic Sieve to Trial Division
-
 # How to use
+Refer to `README.md` for instructions

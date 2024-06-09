@@ -107,3 +107,4 @@
 ### 6/9 At home
 -Completed a section in the quadratic sieve presentation
 -Reformatted all of the math and number expressions
+-Updated `README.md` to use makefiles instead of g++ compiling
