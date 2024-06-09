@@ -15,8 +15,8 @@ The product of these two big primes will be $n$
 <!-- typically rsa uses primes with thousands of bits, 2048 or 4096 -->
 
 $E$ can be any arbitrary positive integer, as long as its big (usually we use $E = 2^{16}+1$)  
-We want to evalulate $\lambda(n) = lcm(p-1,q-1)$ (this is Carmichael's lambda function)  
-$d$ will be $d = E^{-1} (\bmod{\ \lambda(n)})$  
+We want to evalulate $\lambda(n) = \text{lcm}(p-1,q-1)$ (this is Carmichael's lambda function)  
+$d$ will be $d = E^{-1} \ (\text{mod}\ \lambda(n))$  
 
 $n$ and $E$ will both be publicly shared and our public key is the pair $(n,E)$  
 $p$, $q$, and $d$ should not be shared and our private key is the pair $(n,d)$  
@@ -25,24 +25,24 @@ $p$, $q$, and $d$ should not be shared and our private key is the pair $(n,d)$
 ### How do we encrypt using RSA?
 Let's say Bob wants to send Alice an important number, lets call $m$ (note $m < n$)  
 Bob knows Alice's public key since she openly advertises it  
-Bob can convert his important number into a new number, say $g$, by doing $g = m^E (\bmod{\ n})$  
+Bob can convert his important number into a new number, say $g$, by doing $g = m^E \ (\text{mod}\ n)$  
 Then, Bob can send $g$ to Alice so if any third party somehow obtains $g$, they cannot obtain the original number $m$ unless they're Alice  
 <br>
 
 ### How can Alice revert $g$ back into $m$?  
-Well, $d$ has the special property that $m = g^d (\bmod{\ n})$ so by simply repeating the exponentiation, we get back our original message  
+Well, $d$ has the special property that $m = g^d \ (\text{mod}\ n)$ so by simply repeating the exponentiation, we get back our original message  
 <br>
 
 <!--a brief proof-->
 ### Why does this work?
-I claim that $(m^E)^d \equiv m (\bmod{\ n})$  
-The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 (\bmod{\ n})$  
-Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r (\bmod{\ n})$  
-Or in other words: $a^b = a^{b (\bmod{\ \lambda(n)})} (\bmod{\ n})$ for any integers $a$,$b$  
+I claim that $(m^E)^d \equiv m \ (\text{mod}\ n)$  
+The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \ (\text{mod}\ n)$  
+Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \ (\text{mod}\ n)$  
+Or in other words: $a^b = a^{b \ (\text{mod}\ \lambda(n))} \ (\text{mod}\ n)$ for any integers $a$,$b$  
 
-Also note that $E \cdot d = 1 (\bmod{\ \lambda(n)})$ by definition of $d$  
+Also note that $E \cdot d = 1 \ (\text{mod}\ \lambda(n))$ by definition of $d$  
 
-Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed (\bmod{\ \lambda(n)})} \equiv m^1 (\bmod{\ n})$  
+Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed \ (\text{mod}\ \lambda(n))} \equiv m^1 \ (\text{mod}\ n)$  
 <br>
 
 ## Why is it secure?
@@ -87,40 +87,40 @@ Although faster, it's still not efficient enough.
 
 ## How does Quadratic Sieve attempt to factor a large number n
 Quadratic sieve takes inspiration from the method described above.  
-We aim to find two integers such that $a^2 \equiv b^2 (\bmod{\ n})$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
+We aim to find two integers such that $a^2 \equiv b^2 \ (\text{mod}\ n)$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
 However, it's very rare to have two congruent perfect squares mod $n$ so instead, we look for a set of perfect squares such that their residues multiply to a perfect square    
 
 Let's try an example  
 If we have $n = 2231$, we can start evaluating squares and their residues starting from $\lceil{\sqrt{n}}\ \rceil$  
 
-$48^2 \equiv 73 (\bmod\ n)$  
-$49^2 \equiv 170 (\bmod\ n)$  
-$50^2 \equiv 269 (\bmod\ n)$  
-$51^2 \equiv 370 (\bmod\ n)$  
-$52^2 \equiv 473 (\bmod\ n)$  
-$53^2 \equiv 578 (\bmod\ n)$  
-$54^2 \equiv 685 (\bmod\ n)$  
-$55^2 \equiv 794 (\bmod\ n)$  
-$56^2 \equiv 905 (\bmod\ n)$  
-$57^2 \equiv 1018 (\bmod\ n)$  
-$58^2 \equiv 1133 (\bmod\ n)$  
-$59^2 \equiv 1250 (\bmod\ n)$  
-$60^2 \equiv 1369 (\bmod\ n)$  
-$61^2 \equiv 1490 (\bmod\ n)$  
-$62^2 \equiv 1613 (\bmod\ n)$  
-$63^2 \equiv 1738 (\bmod\ n)$  
-$64^2 \equiv 1865 (\bmod\ n)$  
-$65^2 \equiv 1994 (\bmod\ n)$  
-$66^2 \equiv 2125 (\bmod\ n)$  
+$48^2 \equiv 73 \ (\text{mod}\ n)$  
+$49^2 \equiv 170 \ (\text{mod}\ n)$  
+$50^2 \equiv 269 \ (\text{mod}\ n)$  
+$51^2 \equiv 370 \ (\text{mod}\ n)$  
+$52^2 \equiv 473 \ (\text{mod}\ n)$  
+$53^2 \equiv 578 \ (\text{mod}\ n)$  
+$54^2 \equiv 685 \ (\text{mod}\ n)$  
+$55^2 \equiv 794 \ (\text{mod}\ n)$  
+$56^2 \equiv 905 \ (\text{mod}\ n)$  
+$57^2 \equiv 1018 \ (\text{mod}\ n)$  
+$58^2 \equiv 1133 \ (\text{mod}\ n)$  
+$59^2 \equiv 1250 \ (\text{mod}\ n)$  
+$60^2 \equiv 1369 \ (\text{mod}\ n)$  
+$61^2 \equiv 1490 \ (\text{mod}\ n)$  
+$62^2 \equiv 1613 \ (\text{mod}\ n)$  
+$63^2 \equiv 1738 \ (\text{mod}\ n)$  
+$64^2 \equiv 1865 \ (\text{mod}\ n)$  
+$65^2 \equiv 1994 \ (\text{mod}\ n)$  
+$66^2 \equiv 2125 \ (\text{mod}\ n)$  
 
 None of these have residues which are perfect squares so we cannot use Fermat's method. However if we multiply these relations:  
-$49^2 \equiv 170 (\bmod\ n)$  
-$53^2 \equiv 578 (\bmod\ n)$  
-$66^2 \equiv 2125 (\bmod\ n)$  
+$49^2 \equiv 170 \ (\text{mod}\ n)$  
+$53^2 \equiv 578 \ (\text{mod}\ n)$  
+$66^2 \equiv 2125 \ (\text{mod}\ n)$  
 
 We get:  
-$(49 \cdot 53 \cdot 66)^2 \equiv (170 \cdot 578 \cdot 2125) (\bmod\ n)$  
-$171402^2 \equiv 14450^2 (\bmod\ n)$
+$(49 \cdot 53 \cdot 66)^2 \equiv (170 \cdot 578 \cdot 2125) \ (\text{mod}\ n)$  
+$171402^2 \equiv 14450^2 \ (\text{mod}\ n)$
 
 Aha! We've just created a relation with two perfect squares  
 Now, if we do $\gcd(171402-14450,n)$ and $\gcd(171402+14450,n)$, we will obtain $23$, and $97$.  
