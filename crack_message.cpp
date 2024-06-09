@@ -284,6 +284,7 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < unknowns.size(); i++) {
         if (unknowns[i]) {
             og *= (root+ind[i]);
+            debug(root+ind[i]);
         }
     }
 
@@ -293,6 +294,7 @@ int main(int argc, char* argv[]) {
     mpz_gcd(gcd2.get(), z(og-sq), n.get());
     debug(gcd1);
     debug(gcd2);
+    debug(unknowns);
 
     //print runtime so we can compare to the trial division algorithm, also so we can choose better bounds on B
     cout << "Time elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";

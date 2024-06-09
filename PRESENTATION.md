@@ -50,7 +50,7 @@ If we want to (maliciously) obtain the encrypted number, we would have to obtain
 In order to obtain $d$, we must factor $n$ into its original two primes $p$ and $q$  
 However, there does not exist a "fast" algorithm for factoring a big number  
 
-Multiplying is usually agreed to be somewhere between $\mathcal{O}(n^2)$ and $\mathcal{O}(n\log n \cdot \log \log(n))$ where n is the number of digits of our two factors  
+Multiplying is usually agreed to be somewhere between $\mathcal{O}(n^2)$ and $\mathcal{O}(n\log n \cdot \log \log(n))$ where n is the number of digits of our two factors<!--dont confuse n with other n-->  
 In algorithm analysis, we would say multiplication is part of class P (which stands for polynomial). You can just think of it as "multiplication is fast"  
 
 Factoring, is much more difficult and there currently does not exist an algorithm in class P that can factor efficiently  
@@ -71,8 +71,28 @@ In fact, the setup you used to link your machine to your github account used RSA
 <br>
 
 # Quadratic Sieve
+Although the complexity of factoring $n$ will never be polynomial, we can use other methods to shave off runtime and make larger sized numbers factorable  
+
+## Naive approaches
+### Trial Division
+We can naively iterate from $2$ to $n$ and if we find a number that $n$ is divisible by, we will have our two factors  
+An informed reader may notice that you only need to iterate from $2$ to $\sqrt{n}$ since one of the factors always has to be in that interval  
+<br>
+
+### Fermat's factorization method
+If we can express $n$ as $n = a^2 - b^2$ then by algebra, $n = (a-b)(a+b)$ so we have our factors.  
+We can manually iterate $a$ and determine whether $a^2-n$ is a perfect square.  
+Although faster, it's still not efficient enough.
+<br>
 
 ## How does Quadratic Sieve attempt to factor a large number n
+Quadratic sieve takes inspiration from the method described above.  
+We aim to find two integers such that $a^2 \equiv b^2 \pmod{n}$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
+However, it's very rare to have two congruent perfect squares mod $n$ so instead, we look for a set of perfect squares such that their residues multiply to a perfect square    
+
+Let's try an example  
+If we have $n = ..........$, we can start evaluating squares and their residues starting from $\lceil{\sqrt{n}}\ \rceil$  
+
 
 ## Compare Quadratic Sieve to Trial Division
 
