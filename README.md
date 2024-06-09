@@ -23,15 +23,21 @@ Note:
 - Generates public and private keys
 - Uses two K bit prime numbers
 
+![ex of create keys](pictures/generatepic.PNG)
+
 ### How to encrypt your message
 `make encrypt ARGS="[N] [E] [M]"`
 - N and E are the values from the public key
 - M is the message number, make sure M < N
 
+![ex of encrypting msg](pictures/encryptpic.PNG)
+
 ### How to decrypt your message
 `make decrypt ARGS="[N] [D] [C]"`
 - N and D are the values from the private key
 - C is the encrypted message
+
+![ex of decrypting msg](pictures/decryptpic.PNG)
 
 ### How to attempt to crack and obtain the private key from the public key
 `make crack ARGS="[N] [E] [EPS]"`
@@ -39,3 +45,5 @@ Note:
 - EPS is probability of getting a valid private key
     - Higher EPS means factors of N are more likely to be nontrivial and the private key is more likely to be correct
     - Tradeoff is the runtime, higher the EPS, the slower it gets
+
+![ex of cracking rsa](pictures/crackmessagepic.PNG)

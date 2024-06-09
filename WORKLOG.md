@@ -110,3 +110,4 @@
 -Edited `crack_message.cpp` to only print out time elapsed and the private key
 -Removed debug statements
 -Updated `README.md` to use makefiles instead of g++ compiling
+-Included some images in `README.md` and `PRESENTATION.md`

@@ -38,7 +38,7 @@ Well, $d$ has the special property that $m = g^d \ (\text{mod}\ n)$ so by simply
 I claim that $(m^E)^d \equiv m \ (\text{mod}\ n)$  
 The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \ (\text{mod}\ n)$  
 Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \ (\text{mod}\ n)$  
-Or in other words: $a^b = a^{b \ (\text{mod}\ \lambda(n))} \ (\text{mod}\ n)$ for any integers $a$,$b$  
+Or in other words: $a^b = a^{b \ (\text{mod}\ \lambda(n))} \ (\text{mod}\ n)$ for any integers $a,b$  
 
 Also note that $E \cdot d = 1 \ (\text{mod}\ \lambda(n))$ by definition of $d$  
 
@@ -126,12 +126,16 @@ Aha! We've just created a relation with two perfect squares
 Now, if we do $\gcd(171402-14450,n)$ and $\gcd(171402+14450,n)$, we will obtain $23$, and $97$.  
 And indeed, $23 \cdot 97 = 2231$.  
 
+Quadratic Sieve has a lower bound of $\exp(0.5 \cdot \sqrt{\log(n) \log(\log(n))})$
+
 Regarding how we're going to algorithmize this process, it will require some heavy maths topics like  
 - Euler's criterion for quadratic reciprocity  
 - Solving for nullspaces from linear algebra  
 - Tonelli–Shanks algorithm for solving modular square roots  
 
 So if you'd like to read more, feel free to research on your own or read my code  
+
+<img src="pictures/desmosgraph.PNG" alt="desmos graph of time complexities" width="600"/>
 
 # How to use
 Refer to `README.md` for instructions

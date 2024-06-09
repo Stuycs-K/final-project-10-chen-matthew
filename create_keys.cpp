@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
     mpz_class p = rando.get_z_bits(N), q = rando.get_z_bits(N);
     mpz_nextprime(p.get(), p.get());
     mpz_nextprime(q.get(), q.get());
-    debug(p);
-    debug(q);
+    //debug(p);
+    //debug(q);
     mpz_class n = p*q;
     mpz_class totient, a = p-1, b = q-1;
     mpz_lcm(totient.get(), a.get(), b.get());
