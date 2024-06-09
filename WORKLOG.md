@@ -102,3 +102,4 @@
 -revised and reorganized `PRESENTATION.MD`  
 -included LaTeX formatting to the math expressions  
 -completed a proof for correctness of RSA  
+-did some explanation for quadratic sieve explanation in `PRESENTATION.md`

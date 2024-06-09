@@ -16,7 +16,7 @@ The product of these two big primes will be $n$
 
 $E$ can be any arbitrary positive integer, as long as its big (usually we use $E = 2^{16}+1$)  
 We want to evalulate $\lambda(n) = lcm(p-1,q-1)$ (this is Carmichael's lambda function)  
-$d$ will be $d = E^{-1} \pmod{\lambda(n)}$  
+$d$ will be $d = E^{-1} \mod{\lambda(n)}$  
 
 $n$ and $E$ will both be publicly shared and our public key is the pair $(n,E)$  
 $p$, $q$, and $d$ should not be shared and our private key is the pair $(n,d)$  
@@ -24,25 +24,25 @@ $p$, $q$, and $d$ should not be shared and our private key is the pair $(n,d)$
 ### How do we encrypt using RSA?
 Let's say Bob wants to send Alice an important number, lets call $m$ (note $m < n$)  
 Bob knows Alice's public key since she openly advertises it  
-Bob can convert his important number into a new number, say $g$, by doing $g = m^E \pmod{n}$  
+Bob can convert his important number into a new number, say $g$, by doing $g = m^E \mod{n}$  
 Then, Bob can send $g$ to Alice so if any third party somehow obtains $g$, they cannot obtain the original number $m$ unless they're Alice  
 <br>
 
 ### How can Alice revert $g$ back into $m$?  
-Well, $d$ has the special property that $m = g^d \pmod{n}$ so by simply repeating the exponentiation, we get back our original message  
+Well, $d$ has the special property that $m = g^d \mod{n}$ so by simply repeating the exponentiation, we get back our original message  
 <br>
 
 <!--a brief proof-->
 ### Why does this work?
-I claim that $(m^E)^d \equiv m \pmod{n}$  
-<!--$(m^e)^d = m^{e \cdot d} \pmod{n}$  -->
-The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \pmod{n}$  
-Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \pmod{n}$  
-Or in other words: $a^b = a^{b \pmod{\lambda(n)}} \pmod{n}$ for any integers $a$,$b$  
+I claim that $(m^E)^d \equiv m \mod{n}$  
+<!--$(m^e)^d = m^{e \cdot d} \mod{n}$  -->
+The Carmichael function $\lambda(n)$ has the property that $a^{\lambda(n)} \equiv 1 \mod{n}$  
+Therefore, $a^{\lambda(n)k + r} \equiv (a^{\lambda(n)})^k \cdot a^r \equiv (1)^k \cdot a^r \equiv a^r \mod{n}$  
+Or in other words: $a^b = a^{b \mod{\lambda(n)}} \mod{n}$ for any integers $a$,$b$  
 
-Also note that $E \cdot d = 1 \pmod{\lambda(n)}$ by definition of $d$  
+Also note that $E \cdot d = 1 \mod{\lambda(n)}$ by definition of $d$  
 
-Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed \pmod{\lambda(n)}} \equiv m^1 \pmod{n}$  
+Using this, our original expression becomes $(m^E)^d \equiv m^{Ed} \equiv m^{Ed \mod{\lambda(n)}} \equiv m^1 \mod{n}$  
 <br>
 
 ## Why is it secure?
@@ -87,7 +87,7 @@ Although faster, it's still not efficient enough.
 
 ## How does Quadratic Sieve attempt to factor a large number n
 Quadratic sieve takes inspiration from the method described above.  
-We aim to find two integers such that $a^2 \equiv b^2 \pmod{n}$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
+We aim to find two integers such that $a^2 \equiv b^2 \mod{n}$ since that means $(a-b)(a+b) = k \cdot n$ for some integer k and there's a good chance they're factors of $n$ instead of $k$.  
 However, it's very rare to have two congruent perfect squares mod $n$ so instead, we look for a set of perfect squares such that their residues multiply to a perfect square    
 
 Let's try an example  
