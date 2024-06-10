@@ -111,3 +111,4 @@
 -Removed debug statements
 -Updated `README.md` to use makefiles instead of g++ compiling
 -Included some images in `README.md` and `PRESENTATION.md`
+-Finished recording and linked it to `README.md`
