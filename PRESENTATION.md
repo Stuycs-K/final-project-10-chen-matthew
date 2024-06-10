@@ -126,7 +126,7 @@ Aha! We've just created a relation with two perfect squares
 Now, if we do $\gcd(171402-14450,n)$ and $\gcd(171402+14450,n)$, we will obtain $23$, and $97$.  
 And indeed, $23 \cdot 97 = 2231$.  
 
-Quadratic Sieve has a lower bound of $\exp(0.5 \cdot \sqrt{\log(n) \log(\log(n))})$
+Quadratic Sieve has a lower bound of $\exp(0.5 \cdot \sqrt{\log n \log \log n})$
 
 Regarding how we're going to algorithmize this process, it will require some heavy maths topics like  
 - Euler's criterion for quadratic reciprocity  
@@ -136,6 +136,12 @@ Regarding how we're going to algorithmize this process, it will require some hea
 So if you'd like to read more, feel free to research on your own or read my code  
 
 <img src="pictures/desmosgraph.PNG" alt="desmos graph of time complexities" width="600"/>
+
+The X axis represents the number of digits of $n$, the value we're factoring  
+Blue - $x\log x \log \log x$  
+Red - $x^2$  
+Purple - $\exp(0.5 \cdot \sqrt{x \log x})$  
+Green - $\sqrt{10^x}$  
 
 # How to use
 Refer to `README.md` for instructions
