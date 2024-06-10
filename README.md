@@ -32,7 +32,7 @@ Note:
 - N and E are the values from the public key
 - M is the message number, make sure M < N
 
-![ex of encrypting msg](pictures/encryptpic.PNG)
+![ex of encrypting msg](pictures/encryptpic.png)
 
 ### How to decrypt your message
 `make decrypt ARGS="[N] [D] [C]"`
